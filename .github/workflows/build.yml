@@ -33,3 +33,8 @@ jobs:
         env:
           TAG: ${{ needs.build.outputs.tag }}
         run: echo "$TAG"
+      - name: Clone the target repository
+        uses: actions/checkout@v3
+        with:
+          repository: 'yun-minho/kustomize-example'
+          path: 'kustomize-example'

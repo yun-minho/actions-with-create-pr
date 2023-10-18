@@ -39,3 +39,7 @@ jobs:
           repository: 'yun-minho/kustomize-example'
           ref: 'main'
           path: 'kustomize-example'
+          ssh-key: ${{ secrets.OTHER_REPO_DEPLOY_KEY }}
+      - name: Check if cloning repo succeeded
+        run: |
+          ls ./kustomize-example

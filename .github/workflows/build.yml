@@ -53,6 +53,7 @@ jobs:
           # コミッターの情報セット
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git config --unset-all http.https://github.com/.extraheader
 
           # ブランチ作成及びチェックアウト
           git switch -c $BRANCH_NAME

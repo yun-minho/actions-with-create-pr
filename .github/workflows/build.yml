@@ -40,6 +40,34 @@ jobs:
           ref: 'main'
           path: 'kustomize-example'
           ssh-key: ${{ secrets.OTHER_REPO_DEPLOY_KEY }}
-      - name: Check if cloning repo succeeded
+      - name: Create PR to the target repository
+        env:
+          TAG: ${{ needs.build.outputs.tag }}
         run: |
-          ls ./kustomize-example
+          # 共通変数などのセット
+          BRANCH_NAME="update-repo-$TAG"
+          
+          cd kustomize-example
+          
+          # コミッターの情報セット
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # ブランチ作成及びチェックアウト
+          git switch -c $BRANCH_NAME
+          
+          # 対象レポジトリの内容に対して何かしらの修正
+          echo $TAG >> ./temp/tag.txt
+
+          # Commit と Push
+          git add .
+          git commit -m "Add $TAG to tags.txt"
+          git push origin $BRANCH_NAME
+
+          # 対象レポジトリに PR を作成
+          gh pr create \
+            --title "Update tags.txt" \
+            --body "Add $TAG to tags.txt" \
+            --repo yun-minho/kustomize-example \
+            --base main \
+            --head $BRANCH_NAME

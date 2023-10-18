@@ -40,11 +40,10 @@ jobs:
           ref: 'main'
           path: 'kustomize-example'
           ssh-key: ${{ secrets.OTHER_REPO_DEPLOY_KEY }}
-      - run: |
-          echo "${{ secrets.GITHUB_TOKEN }}"
       - name: Create PR to the target repository
         env:
           TAG: ${{ needs.build.outputs.tag }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # 共通変数などのセット
           BRANCH_NAME="update-repo-$TAG"

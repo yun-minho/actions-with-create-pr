@@ -65,7 +65,12 @@ jobs:
           git commit -m "Add $TAG to tags.txt"
           git push origin $BRANCH_NAME
 
+          # github cli への認証処理のためのトークン設定
+          # actions を発火する repo の runner 上で保持しているマシンの github.token を利用する場合、PR 作成時に repo を探せない
+          echo "${{ secrets.OTHER_REPO_DEPLOY_KEY }}" > token.txt
+
           # github cli を通して対象レポジトリに PR を作成
+          gh auth login --with-token < token.txt
           gh pr create \
             --title "Update tags.txt" \
             --body "Add $TAG to tags.txt" \

@@ -43,7 +43,6 @@ jobs:
       - name: Create PR to the target repository
         env:
           TAG: ${{ needs.build.outputs.tag }}
-          GH_TOKEN: ${{ github.token }}
         run: |
           # 共通変数などのセット
           BRANCH_NAME="update-repo-$TAG"

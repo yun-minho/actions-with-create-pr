@@ -43,6 +43,7 @@ jobs:
       - name: Create PR to the target repository
         env:
           TAG: ${{ needs.build.outputs.tag }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           # 共通変数などのセット
           BRANCH_NAME="update-repo-$TAG"
@@ -50,8 +51,8 @@ jobs:
           cd kustomize-example
           
           # コミッターの情報セット
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
 
           # ブランチ作成及びチェックアウト
           git switch -c $BRANCH_NAME
@@ -64,12 +65,7 @@ jobs:
           git commit -m "Add $TAG to tags.txt"
           git push origin $BRANCH_NAME
 
-          # github cli への認証処理のためのトークン設定
-          # actions を発火する repo の runner 上で保持しているマシンの github.token を利用する場合、PR 作成時に repo を探せない
-          echo "${{ secrets.OTHER_REPO_DEPLOY_KEY }}" > token.txt
-
           # github cli を通して対象レポジトリに PR を作成
-          gh auth login --with-token < token.txt
           gh pr create \
             --title "Update tags.txt" \
             --body "Add $TAG to tags.txt" \

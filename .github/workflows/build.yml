@@ -33,17 +33,26 @@ jobs:
         env:
           TAG: ${{ needs.build.outputs.tag }}
         run: echo "$TAG"
+      - name: Generate Github App token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Clone the target repository
         uses: actions/checkout@v3
         with:
           repository: 'yun-minho/kustomize-example'
           ref: 'main'
           path: 'kustomize-example'
-          ssh-key: ${{ secrets.OTHER_REPO_DEPLOY_KEY }}
+          ssh-key: ${{ steps.generate-token.outputs.token }}
       - name: Create PR to the target repository
         env:
           TAG: ${{ needs.build.outputs.tag }}
-          GH_ENTERPRISE_TOKEN: ${{ secrets.OTHER_REPO_DEPLOY_KEY }}
+          # GHEC の場合 GH_TOKEN でなく　GH_ENTERPRISE_TOKEN になる可能性がある
+          # 上記の設定になると、合わせて GH_HOST もセット必要になるが、まだどんな値をセットするかは分からない
+          # 参考: https://cli.github.com/manual/gh_help_environment
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           # 共通変数などのセット
           BRANCH_NAME="update-repo-$TAG"

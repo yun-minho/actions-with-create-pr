@@ -35,10 +35,10 @@ jobs:
         run: echo "$TAG"
       - name: Generate Github App token
         id: generate-token
-        uses: actions/create-github-app-token@v1
+        uses: getsentry/action-github-app-token@v1
         with:
-          app-id: ${{ secrets.GH_APP_ID }}
-          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Clone the target repository
         uses: actions/checkout@v3
         with:
@@ -46,7 +46,6 @@ jobs:
           ref: 'main'
           path: 'kustomize-example'
           token: ${{ steps.generate-token.outputs.token }}
-          persist-credentials: false
       - name: Create PR to the target repository
         env:
           TAG: ${{ needs.build.outputs.tag }}

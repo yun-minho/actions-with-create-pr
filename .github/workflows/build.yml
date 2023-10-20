@@ -73,6 +73,5 @@ jobs:
           gh pr create \
             --title "Update tags.txt" \
             --body "Add $TAG to tags.txt" \
-            --repo yun-minho/kustomize-example \
             --base main \
             --head $BRANCH_NAME

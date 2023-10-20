@@ -45,7 +45,8 @@ jobs:
           repository: 'yun-minho/kustomize-example'
           ref: 'main'
           path: 'kustomize-example'
-          ssh-key: ${{ steps.generate-token.outputs.token }}
+          token: ${{ steps.generate-token.outputs.token }}
+          persist-credentials: false
       - name: Create PR to the target repository
         env:
           TAG: ${{ needs.build.outputs.tag }}
